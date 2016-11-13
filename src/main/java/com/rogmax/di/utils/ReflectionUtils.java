@@ -22,16 +22,16 @@ public class ReflectionUtils {
         return getClasses(classesNames);
     }
 
+    public static List<Class> getClasses(List<String> names) {
+        return names.stream().map(ReflectionUtils::getClass).collect(Collectors.toList());
+    }
+
     public static Class getClass(String name) {
         try {
             return Class.forName(name);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static List<Class> getClasses(List<String> names) {
-        return names.stream().map(ReflectionUtils::getClass).collect(Collectors.toList());
     }
 
     public static List createInstances(List<Class> classes) {
@@ -64,10 +64,7 @@ public class ReflectionUtils {
 
 
     public static void invokeMethodAnnotatedWith(Object o, Class annotation) {
-        Stream<Method> stream = Arrays.stream(o.getClass().getMethods());
-        Stream<Method> methodStream = stream.filter(m -> m.isAnnotationPresent(annotation));
-
-        methodStream.forEach(m -> invoke(o, m));
+        Arrays.stream(o.getClass().getMethods()).filter(m -> m.isAnnotationPresent(annotation)).forEach(m -> invoke(o, m));
     }
 
     public static void invoke(Object o, Method m) {
